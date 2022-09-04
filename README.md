@@ -14,6 +14,8 @@ pip3 install datetime
 
 ## Additional Information
 
+* All times are UTC, also the weather console will be set to UTC
+
 Now follows information mainly from the original repository by BobAtchley.
 
 However, some refers to weewx, so it is maybe not relevant for this clone.
