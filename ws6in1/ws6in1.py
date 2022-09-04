@@ -365,11 +365,12 @@ If a sleep is used the Ack and continue retrieves the now stale data.
 import struct
 import time
 import logging
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import crcmod
 import usb.core
 import usb.util
 
+#logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 DRIVER_NAME = 'WS6in1'
@@ -391,10 +392,11 @@ class ws6in1:
     # stn_dict contains the input parameters - the only expected one is the model
     # the default is WS6in1
     #-------------------------------------------------------
-    def __init__(self, ws_type):
+    def __init__(self, model):
 
         # get data from the configuration if available
-        ws_type = ws_type.upper()
+        self.model = model
+        ws_type = model.upper()
         self.uv_flag = True
         if ws_type == "WS5IN1":
             self.uv_flag = False
@@ -720,14 +722,17 @@ class ws6in1:
                             my_interval = 0
 
                     self.last_ts = my_time
+                    current_time = datetime.utcfromtimestamp(my_time)
 
             else:
                 # weewx time - use local time as its accurate (ntp, utc)
-                my_time = int(time.time() + 0.5)
+                current_time = datetime.now(timezone.utc).replace(microsecond=0)
+                my_time = int(current_time.timestamp())
 
             # weewx uses packet ...
             packet['usUnits'] = "metric"
             packet['dateTime'] = my_time
+            packet['datetime'] = current_time
             log.debug("decode::got my_time: %d", my_time)
             packet['inTemp'] = in_temp
             packet['inHumidity'] = in_humid
@@ -771,12 +776,12 @@ class ws6in1:
             if self.bad_values > 0:
                 log.warning("decode: %d bad values occurred - rejecting this set of readings",
                             self.bad_values)
-                print("buflen=" + str(len(self.buff)) + "  level=" + str(level))
+                log.debug("buflen=" + str(len(self.buff)) + "  level=" + str(level))
                 for i in range(len(self.buff)):
-                    print(str(self.buff[i]) + " ")
-                print("int1:")
+                    log.debug(str(self.buff[i]) + " ")
+                log.debug("int1:")
                 for i in range(len(self.in1)):
-                    print(str(self.in1[i]) + " ")
+                    log.debug(str(self.in1[i]) + " ")
 
                 # bad_values occurring in the start records: wrorong time and
                 # missing values means it is better to reject this set of data
@@ -790,12 +795,12 @@ class ws6in1:
 
         except ValueError as my_error:
             log.error("decode::ValueError error: %s", my_error)
-            print("buflen="+str(len(self.buff))+"  level=" + str(level))
+            log.debug("buflen="+str(len(self.buff))+"  level=" + str(level))
             for i in range(len(self.buff)):
-                print(str(self.buff[i]) + " ")
-            print("int1:")
+                log.debug(str(self.buff[i]) + " ")
+            log.debug("int1:")
             for i in range(len(self.in1)):
-                print(str(self.in1[i])+" ")
+                log.debug(str(self.in1[i])+" ")
             self.ws_status = 0
 
         return packet
@@ -916,7 +921,7 @@ class ws6in1:
     # this is the main loop that sends commands and reads responses
     # it calls decode to write the output
     #---------------------------------------------------------------
-    def genLoopPackets(self):
+    def genLoopPackets(self) -> dict:
         """Main function that gets current data from the console and calls decode to
         decode it.  Results are 'yielded' to the weewx engine"""
 
@@ -1282,7 +1287,7 @@ class ws6in1:
         crcfunc = crcmod.predefined.mkCrcFun('xmodem')
 
         # First get the date and time
-        my_now = datetime.now()
+        my_now = datetime.now(timezone.utc)
         my_year = my_now.year - 2000
         my_month = my_now.month
         my_day = my_now.day
@@ -1316,7 +1321,7 @@ class ws6in1:
             self.dev.read(0x81, 64, timeout)
 
             # get the time again (could be 10 seconds later ...)
-            my_now = datetime.now()
+            my_now = datetime.now(timezone.utc)
             my_hour = my_now.hour
             my_min = my_now.minute
             my_sec = my_now.second
