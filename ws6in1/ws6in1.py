@@ -370,36 +370,19 @@ import crcmod
 import usb.core
 import usb.util
 
-import weewx.drivers
-
 log = logging.getLogger(__name__)
 
 DRIVER_NAME = 'WS6in1'
 DRIVER_VERSION = "1.03"
 
-#------------------------------------------------------------------------------
-# loader
-#------------------------------------------------------------------------------
-# Required weewx driver function to return the instance of the ws6in1 driver
-#
-# config_dict: the configuration dictionary
-# engine:      a reference to the weewx engine
-#------------------------------------------------------------------------------
-def loader(config_dict, engine):
-    """returns the ws6in1 driver instance"""
-    return ws6in1(**config_dict[DRIVER_NAME])
-# end def loader
 
 ###############################################################################
 # Class ws6in1
 ###############################################################################
 # Main class for defining the interface between the WS 6 in 1 weather stations
-# and weewx
-#
-# Inherits from weewx.drivers.AbstractDevice
 ###############################################################################
-class ws6in1(weewx.drivers.AbstractDevice):
-    """ws6in1 is the main driver class for use with weewx and WS6in1 compatible
+class ws6in1:
+    """ws6in1 is the main driver class for use with WS6in1 compatible
     weather station consoles"""
 
     #-------------------------------------------------------
@@ -408,11 +391,9 @@ class ws6in1(weewx.drivers.AbstractDevice):
     # stn_dict contains the input parameters - the only expected one is the model
     # the default is WS6in1
     #-------------------------------------------------------
-    def __init__(self, **stn_dict):
+    def __init__(self, ws_type):
 
         # get data from the configuration if available
-        self.model = stn_dict.get('model', 'WS6in1')
-        ws_type = stn_dict.get('wsType', 'WS6in1')
         ws_type = ws_type.upper()
         self.uv_flag = True
         if ws_type == "WS5IN1":
@@ -745,7 +726,7 @@ class ws6in1(weewx.drivers.AbstractDevice):
                 my_time = int(time.time() + 0.5)
 
             # weewx uses packet ...
-            packet['usUnits'] = weewx.METRIC
+            packet['usUnits'] = "metric"
             packet['dateTime'] = my_time
             log.debug("decode::got my_time: %d", my_time)
             packet['inTemp'] = in_temp
@@ -992,7 +973,7 @@ class ws6in1(weewx.drivers.AbstractDevice):
 
         # do some looping
         packet = {}
-        packet['usUnits'] = weewx.METRIC
+        packet['usUnits'] = "metric"
 
         count = 0
         while True:
@@ -1163,7 +1144,7 @@ class ws6in1(weewx.drivers.AbstractDevice):
                                0xFD)
         # do some looping
         packet = {}
-        packet['usUnits'] = weewx.METRIC
+        packet['usUnits'] = "metric"
 
         count = 0
         more_history = True
