@@ -1,0 +1,12 @@
+services:
+  test:
+    build:
+      context: .
+        #restart: unless-stopped
+    devices:
+      - "/dev/bus/usb/002/004"
+        #volumes:
+        #- /dev/ttyUSB0:/dev/ttyUSB0
+        #- ${PWD}/config.ini:/etc/config.ini
+        #- /etc/ssl/mqtt:/etc/ssl/mqtt:ro
+        #privileged: true
