@@ -1,0 +1,22 @@
+[ws6in1]
+model = WS5in1
+interval = 30 # sec
+
+[influx2]
+url = http://ip:8086
+org = ignored-in-version-1-8
+token = retracted
+bucket = weather
+
+[mqtt]
+host = host
+port = 8883
+ca_cert = /etc/ssl/mqtt/ca.crt
+cert = /etc/ssl/mqtt/cert.crt
+key = /etc/ssl/mqtt/cert.key
+topic_prefix = sensors/location/
+
+[tags]
+dc=good_datacenter
+host=better_server
+sensor=best_sensor

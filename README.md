@@ -12,6 +12,11 @@ pip3 install crcmod
 pip3 install datetime
 ```
 
+## `pusher.py`
+
+Pushes the values to a influxDB and a mqtt server. See `config.ini.example`
+for configuration.
+
 ## Additional Information
 
 * All times are UTC, also the weather console will be set to UTC
