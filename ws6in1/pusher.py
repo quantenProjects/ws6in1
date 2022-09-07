@@ -23,7 +23,7 @@ if __name__ == '__main__':
     model = config["ws6in1"]["model"]
     driver = ws6in1.ws6in1(model)
 
-    exclude_keys = ["usUnits", "dateTime"]
+    exclude_keys = ["usUnits", "dateTime", "datetime"]
 
     influx_client = InfluxDBClient.from_config_file(args.config_file)
     write_api = influx_client.write_api()
@@ -47,7 +47,7 @@ if __name__ == '__main__':
             for key in clean_result:
                 point = point.field(key, clean_result[key])
                 mqtt_client.publish(topic_prefix + model + "/" + key, clean_result[key])
-            point = point.time(clean_result["datetime"])
+            point = point.time(result["datetime"])
 
             write_api.write(bucket=bucket, record=point)
             write_api.flush()
