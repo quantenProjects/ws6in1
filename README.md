@@ -20,6 +20,7 @@ for configuration.
 ## Additional Information
 
 * All times are UTC, also the weather console will be set to UTC
+* Rain is measured in mm (rather than cm as in the original code)
 
 Now follows information mainly from the original repository by BobAtchley.
 

@@ -738,9 +738,9 @@ class ws6in1:
             packet['inHumidity'] = in_humid
             packet['outTemp'] = out_temp
             packet['outHumidity'] = out_humid
-            packet['dayRain'] = rain_day * 0.1 # convert to cm
-            packet['rainRate'] = rain_rate * 0.1 # convert to cm   
-            packet['rain'] = self.rain_delta(rain_day) * 0.1 # convert to cm
+            packet['dayRain'] = rain_day
+            packet['rainRate'] = rain_rate
+            packet['rain'] = self.rain_delta(rain_day)
             packet['windSpeed'] = wind_speed
             packet['windGust'] = wind_gust
             packet['windDir'] = wind_dir_deg
