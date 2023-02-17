@@ -1,7 +1,7 @@
-FROM debian:sid-slim
+FROM python:slim-bullseye
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y libusb-1.0-0 python3-paho-mqtt python3-pip && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y libusb-1.0-0 && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 

@@ -2,3 +2,4 @@ pyusb
 crcmod
 datetime
 influxdb-client
+paho-mqtt
