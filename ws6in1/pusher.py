@@ -31,7 +31,7 @@ if __name__ == '__main__':
     logging.info("connected to influxdb")
 
     topic_prefix = config["mqtt"]["topic_prefix"]
-    mqtt_client = mqtt.Client()
+    mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
     if "ca_cert" in config["mqtt"]:
         mqtt_client.tls_set(ca_certs=config["mqtt"]["ca_cert"], certfile=config["mqtt"]["cert"], keyfile=config["mqtt"]["key"])
     if "password" in config["mqtt"]:
